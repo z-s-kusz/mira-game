@@ -8,9 +8,9 @@
     <button type="button">Object Dissapeared</button>
     <button type="button">Object Appeared</button>
     <button type="button">Object Moved</button>
-    <button type="button">Image Anomoly</button>
-    <button type="button">Door Anomoly</button>
-    <button type="button">Light Anomoly</button>
+    <button type="button">Image Anomaly</button>
+    <button type="button">Door Anomaly</button>
+    <button type="button">Light Anomaly</button>
     <button type="button">Camera Malfunction</button>
     <button type="button">Corpse</button>
     <button type="button">Intruder</button>

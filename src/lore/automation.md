@@ -10,5 +10,5 @@ After all, that's what fixes the anomolies."
 "What do you mean that's what fixes it?"
 
 "You didn't think we send cleanup crews to fix things in 2 seconds did you?
-All clicking Report does is log the anomoly
+All clicking Report does is log the anomaly
 and I suppose, sign your acknowlgement of the glitch in the Matrix."
