@@ -5,22 +5,22 @@
     let img = $state('cam.jpg');
 
     const cycleImages = () => {
-            img = img === 'cam.jpg' ? 'cam2.jpg' : 'cam.jpg';
+        img = img === 'cam.jpg' ? 'cam2.jpg' : 'cam.jpg';
     };
 </script>
 
-  <section>
-        <img class="main" src={img} alt="main" />
-        <img class="static" src="noise.png" alt="static" />
-        <div class="info-container">
-            <Arrows />
-            <ReportControls />
-            <Clock />
-        </div>
-  </section>
+    <section class="main-window">
+            <img class="main" src={img} alt="main" />
+            <img class="static" src="noise.png" alt="static" />
+            <div class="info-container">
+                <ReportControls />
+                <Clock />
+            </div>
+    </section>
+    <Arrows />
 
   <style>
-    section {
+    .main-window {
         position: relative;
         overflow: hidden;
     }

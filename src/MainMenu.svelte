@@ -1,6 +1,5 @@
 <script lang="ts">
     import LevelSelect from './LevelSelect.svelte';
-    import { startGame } from './State.svelte';
 
     let view: 'start' | 'levels' | 'options' = $state('start');
 </script>

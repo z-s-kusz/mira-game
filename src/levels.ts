@@ -1,3 +1,5 @@
+import type { Anomaly, Level, MultiAnomalyImage } from './types/Level';
+
 export default [
     {
         name: 'Party House',
@@ -8,8 +10,8 @@ export default [
                 label: 'Kitchen 1',
                 imageUrl: 'cam.jpg',
                 activeImageUrl: 'cam.jpg',
-                activeAnomolies: [],
-                anomolies: [
+                activeAnomolies: [] as Anomaly[],
+                anomalies: [
                     {
                         id: '11',
                         imageURL: 'cam-dissappear.png',
@@ -26,7 +28,7 @@ export default [
                         validReports: ['Intruder'],
                     },
                 ],
-                multiAnomalyImages: [],
+                multiAnomalyImages: [] as MultiAnomalyImage[],
             },
             {
                 id: '20',
@@ -34,7 +36,7 @@ export default [
                 imageUrl: 'cam2.jpg',
                 activeImageUrl: 'cam2.jpg',
                 activeAnomolies: [],
-                anomolies: [
+                anomalies: [
                     {
                         id: '11',
                         imageURL: 'cam2-dissappear.png',
@@ -56,4 +58,4 @@ export default [
             },
         ],
     },
-];
+] as Level[];

@@ -1,7 +1,15 @@
+export interface AnimationFrame {
+    imageUrl: string;
+    time: number;
+}
+
 export interface Anomaly {
     id: string;
     imageURL: string;
     validReports: string[];
+    isAnimated: boolean;
+    loopAnimation: boolean;
+    frames: AnimationFrame[];
 }
 
 export interface MultiAnomalyImage {
@@ -16,7 +24,7 @@ export interface Room {
     imageUrl: string;
     activeImageUrl: string;
     activeAnomolies: Anomaly[];
-    anomolies: Anomaly[];
+    anomalies: Anomaly[];
     multiAnomalyImages: MultiAnomalyImage[];
 }
 

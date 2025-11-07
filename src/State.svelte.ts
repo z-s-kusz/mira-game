@@ -1,11 +1,22 @@
+import levels from './levels';
 import type { GameView } from './types/GameView';
+import type { Level, Room } from './types/Level';
 
+const milliSecondsPerGameMinute = 1000; // MT is 5000
 let gameView: GameView = $state('MainMenu');
-
 let clockSeconds = $state(0);
 let clockInterval: number;
+let activeRoom: Room = $state(levels[0].rooms[0]);
+let nextAnomolyStartTime = $state(15);
 
-const startGame = () => {
+let anomolyGameOverCount = $state(4); // MT is 5
+let warning = $state({
+    threshhold: 3,
+    remainingWarnings: 1,
+});
+let activeAnomaliesCount = $state(0);
+
+const startGame = (level: Level) => {
     gameView = 'Playing';
     startTimer();
 };
@@ -13,13 +24,43 @@ const startGame = () => {
 const startTimer = () => {
     clockInterval = setInterval(() => {
         clockSeconds = clockSeconds + 1;
-        if (clockSeconds >= 1440) stopTimer();
-    }, 4000);
+
+        if (clockSeconds >= 360) {
+            stopTimer();
+        }
+        else if (clockSeconds >= nextAnomolyStartTime) {
+            if (gameIsOver()) {
+                // show game over message, if they have the perk show them what anomolies they missed
+                return stopTimer();
+            }
+            // check for game over, maybe a perk for 1 more life?
+            // make new anomoly happen
+            // set next anomoly time
+            setNextAnomolyStartTime();
+        }
+    }, milliSecondsPerGameMinute);
 };
 
 const stopTimer = () => {
     if (clockInterval) clearInterval(clockInterval);
     else console.error('tried stopping timer before init.');
+};
+
+const gameIsOver = () => {
+    return activeAnomaliesCount === anomolyGameOverCount - 1;
+};
+
+const setNextAnomolyStartTime = () => {
+    const wieghedTimes = [
+        12,
+        13, 13,
+        14, 14, 14,
+        15, 15, 15, 15, 15,
+        16, 16,
+        17,
+    ];
+    const i = Math.floor(Math.random() * wieghedTimes.length);
+    nextAnomolyStartTime = clockSeconds + wieghedTimes[i];
 };
 
 const getClockSeconds = () => {
