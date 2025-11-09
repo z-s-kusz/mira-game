@@ -1,12 +1,10 @@
 <script lang="ts">
     import Clock from '../Clock.svelte';
+    import { getActiveRoom } from '../State.svelte';
     import Arrows from './Arrows.svelte';
     import ReportControls from './ReportControls.svelte';
-    let img = $state('cam.jpg');
+    let img = $derived(getActiveRoom().activeImageUrl);
 
-    const cycleImages = () => {
-        img = img === 'cam.jpg' ? 'cam2.jpg' : 'cam.jpg';
-    };
 </script>
 
     <section class="main-window">

@@ -6,6 +6,7 @@ const milliSecondsPerGameMinute = 1000; // MT is 5000
 let gameView: GameView = $state('MainMenu');
 let clockSeconds = $state(0);
 let clockInterval: number;
+let selectedLevel: Level = $state(levels[0]);
 let activeRoom: Room = $state(levels[0].rooms[0]);
 let nextAnomolyStartTime = $state(15);
 
@@ -63,6 +64,23 @@ const setNextAnomolyStartTime = () => {
     nextAnomolyStartTime = clockSeconds + wieghedTimes[i];
 };
 
+const goToNextRoom = () => {
+    const currentRoomIndex = selectedLevel.rooms.findIndex((room: Room) => {
+        return room.id === activeRoom.id;
+    });
+    const nextIndex = currentRoomIndex + 1 === selectedLevel.rooms.length ? 0 : currentRoomIndex + 1;
+
+    activeRoom = selectedLevel.rooms[nextIndex];
+};
+
+const goToPreviousRoom = () => {
+    const currentRoomIndex = selectedLevel.rooms.findIndex((room: Room) => {
+        return room.id === activeRoom.id;
+    });
+    const nextIndex = currentRoomIndex === 0 ? selectedLevel.rooms.length - 1 : currentRoomIndex - 1;
+    activeRoom = selectedLevel.rooms[nextIndex];
+};
+
 const getClockSeconds = () => {
     return clockSeconds;
 };
@@ -73,9 +91,26 @@ const setGameView = (value: GameView) => {
     gameView = value;
 };
 
+const getWarning = () => {
+    return warning;
+};
+
+const getActiveAnomaliesCount = () => {
+    return activeAnomaliesCount;
+};
+
+const getActiveRoom = () => {
+    return activeRoom;
+};
+
 export {
     getGameView,
     setGameView,
     getClockSeconds,
     startGame,
+    goToNextRoom,
+    goToPreviousRoom,
+    getWarning,
+    getActiveAnomaliesCount,
+    getActiveRoom,
 };
