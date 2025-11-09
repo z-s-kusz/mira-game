@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { goToNextRoom, goToPreviousRoom } from '../State.svelte';
+    import { goToNextRoom, goToPreviousRoom } from '../GameState.svelte';
 
     const keyDown = (event: any) => {
         event.preventDefault();

@@ -103,6 +103,10 @@ const getActiveRoom = () => {
     return activeRoom;
 };
 
+const getRooms = () => {
+    return selectedLevel.rooms;
+};
+
 export {
     getGameView,
     setGameView,
@@ -113,4 +117,5 @@ export {
     getWarning,
     getActiveAnomaliesCount,
     getActiveRoom,
+    getRooms,
 };

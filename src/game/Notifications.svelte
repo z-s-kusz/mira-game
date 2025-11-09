@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { getActiveAnomaliesCount, getWarning } from '../State.svelte';
+    import { getActiveAnomaliesCount, getWarning } from '../GameState.svelte';
 
     let message = $derived.by(() => {
         const message = {
@@ -16,12 +16,12 @@
 </script>
 
 {#if message.text}
-    <div class={`message ${message.class}`}>{message}</div>
+    <h3 class={`message ${message.class}`}>{message.text}</h3>
 {/if}
 
 <style>
     .message {
-        padding: 0;
+        padding: 0.5rem;
         margin: 0;
         background-color: rgba(0, 0, 0, 0.36);
     }

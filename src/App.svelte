@@ -1,7 +1,7 @@
 <script lang="ts">
     import GameOver from './GameOver.svelte';
     import MainMenu from './MainMenu.svelte';
-    import { getGameView } from './State.svelte';
+    import { getGameView } from './GameState.svelte';
     import Mira from './game/Mira.svelte';
 </script>
 

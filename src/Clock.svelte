@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { getClockSeconds } from './State.svelte';
+    import { getClockSeconds } from './GameState.svelte';
     let clockDisplay = $derived.by(() => {
         const clockSeconds = getClockSeconds();
         const hours = Math.floor(clockSeconds / 60);

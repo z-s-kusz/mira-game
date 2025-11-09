@@ -1,6 +1,6 @@
 <script lang="ts">
     import Clock from '../Clock.svelte';
-    import { getActiveRoom } from '../State.svelte';
+    import { getActiveRoom } from '../GameState.svelte';
     import Arrows from './Arrows.svelte';
     import ReportControls from './ReportControls.svelte';
     let img = $derived(getActiveRoom().activeImageUrl);

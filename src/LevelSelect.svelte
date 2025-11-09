@@ -1,6 +1,6 @@
 <script lang="ts">
     import levels from './levels';
-    import { startGame } from './State.svelte';
+    import { startGame } from './GameState.svelte';
 </script>
 
 <ul>
