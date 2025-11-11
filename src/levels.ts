@@ -1,6 +1,6 @@
 import type { Anomaly, Level, MultiAnomalyImage } from './types/Level';
 
-export default [
+const levels = [
     {
         name: 'Party House',
         id: '1',
@@ -13,17 +13,20 @@ export default [
                 activeAnomolies: [] as Anomaly[],
                 anomalies: [
                     {
-                        id: '11',
+                        id: '1111',
+                        roomId: '',
                         imageURL: 'cam-dissappear.png',
                         validReports: ['Object Dissappearnace'],
                     },
                     {
-                        id: '12',
+                        id: '1112',
+                        roomId: '',
                         imageURL: 'cam-appear.png',
                         validReports: ['Object Appearance'],
                     },
                     {
-                        id: '13',
+                        id: '1113',
+                        roomId: '',
                         imageURL: 'cam-intrude.png',
                         validReports: ['Intruder'],
                     },
@@ -38,12 +41,14 @@ export default [
                 activeAnomolies: [],
                 anomalies: [
                     {
-                        id: '11',
+                        id: '2111',
+                        roomId: '',
                         imageURL: 'cam2-dissappear.png',
                         validReports: ['Object Dissappearnace'],
                     },
                     {
-                        id: '9',
+                        id: '2119',
+                        roomId: '',
                         imageURL: 'cam2-intrude.png',
                         validReports: ['Intruder'],
                     },
@@ -51,11 +56,21 @@ export default [
                 multiAnomalyImages: [
                     {
                         id: '1000',
-                        anomalyIds: ['11', '9'],
-                        imageUrl: 'cam2-,ulti.png',
+                        anomalyIds: ['2111', '2119'],
+                        imageUrl: 'cam2-multi.png',
                     },
                 ],
             },
         ],
     },
 ] as Level[];
+
+levels.forEach((level) => {
+    level.rooms.forEach((room) => {
+        room.anomalies.forEach((anomaly) => {
+            anomaly.roomId = room.id;
+        });
+    });
+});
+
+export default levels;

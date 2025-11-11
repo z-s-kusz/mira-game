@@ -5,6 +5,7 @@ export interface AnimationFrame {
 
 export interface Anomaly {
     id: string;
+    roomId: string;
     imageURL: string;
     validReports: string[];
     isAnimated: boolean;

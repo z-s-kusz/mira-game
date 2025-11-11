@@ -1,6 +1,7 @@
+import selectAnomoly from './anomaly-selector';
 import levels from './levels';
 import type { GameView } from './types/GameView';
-import type { Level, Room } from './types/Level';
+import type { Anomaly, Level, Room } from './types/Level';
 
 const milliSecondsPerGameMinute = 1000; // MT is 5000
 let gameView: GameView = $state('MainMenu');
@@ -10,12 +11,19 @@ let selectedLevel: Level = $state(levels[0]);
 let activeRoom: Room = $state(levels[0].rooms[0]);
 let nextAnomolyStartTime = $state(15);
 
-let anomolyGameOverCount = $state(4); // MT is 5
+let anomolyGameOverCount = $state(4);
 let warning = $state({
     threshhold: 3,
     remainingWarnings: 1,
 });
-let activeAnomaliesCount = $state(0);
+let resolvedAnomolys: Anomaly[] = $state([]);
+let activeAnomolies = $derived.by(() => {
+    let activeAnomalies: Anomaly[] = [];
+    selectedLevel.rooms.forEach((room) => {
+        activeAnomalies = activeAnomalies.concat(room.activeAnomolies);
+    });
+    return activeAnomalies;
+});
 
 const startGame = (level: Level) => {
     gameView = 'Playing';
@@ -28,15 +36,12 @@ const startTimer = () => {
 
         if (clockSeconds >= 360) {
             stopTimer();
-        }
-        else if (clockSeconds >= nextAnomolyStartTime) {
+        } else if (clockSeconds >= nextAnomolyStartTime) {
             if (gameIsOver()) {
                 // show game over message, if they have the perk show them what anomolies they missed
                 return stopTimer();
             }
-            // check for game over, maybe a perk for 1 more life?
-            // make new anomoly happen
-            // set next anomoly time
+            activateNewAnomaly();
             setNextAnomolyStartTime();
         }
     }, milliSecondsPerGameMinute);
@@ -48,7 +53,11 @@ const stopTimer = () => {
 };
 
 const gameIsOver = () => {
-    return activeAnomaliesCount === anomolyGameOverCount - 1;
+    return activeAnomolies.length === anomolyGameOverCount - 1;
+};
+
+const activateNewAnomaly = () => {
+    const newAnomaly = selectAnomoly(activeAnomolies, resolvedAnomolys, selectedLevel.rooms);
 };
 
 const setNextAnomolyStartTime = () => {
@@ -96,7 +105,7 @@ const getWarning = () => {
 };
 
 const getActiveAnomaliesCount = () => {
-    return activeAnomaliesCount;
+    return activeAnomolies.length;
 };
 
 const getActiveRoom = () => {
