@@ -3,12 +3,12 @@ import levels from './levels';
 import type { GameView } from './types/GameView';
 import type { Anomaly, Level, Room } from './types/Level';
 
-const milliSecondsPerGameMinute = 1000; // MT is 5000
+const milliSecondsPerGameMinute = 500; // MT is 5000
 let gameView: GameView = $state('MainMenu');
 let clockSeconds = $state(0);
 let clockInterval: number;
 let selectedLevel: Level = $state(levels[0]);
-let activeRoom: Room = $state(levels[0].rooms[0]);
+let activeRoom: Room = $state(selectedLevel.rooms[0]);
 let nextAnomolyStartTime = $state(15);
 
 let anomolyGameOverCount = $state(4);
@@ -27,6 +27,8 @@ let activeAnomolies = $derived.by(() => {
 
 const startGame = (level: Level) => {
     gameView = 'Playing';
+    selectedLevel = level;
+    activeRoom = selectedLevel.rooms[0];
     startTimer();
 };
 
@@ -49,7 +51,7 @@ const startTimer = () => {
 
 const stopTimer = () => {
     if (clockInterval) clearInterval(clockInterval);
-    else console.error('tried stopping timer before init.');
+    else throw Error('Tried stopping timer before init.');
 };
 
 const gameIsOver = () => {
@@ -58,6 +60,29 @@ const gameIsOver = () => {
 
 const activateNewAnomaly = () => {
     const newAnomaly = selectAnomoly(activeAnomolies, resolvedAnomolys, selectedLevel.rooms);
+    const affectedRoom = selectedLevel.rooms.find((room) => room.id === newAnomaly.roomId);
+    if (!affectedRoom) throw Error('Could not find the room associated with new anomaly');
+    console.log('new anomaly', newAnomaly);
+
+    // TODO double check that push works with signals here, may need to
+    // affectedRoom.activeAnomolies = [...affectedRoom.activeAnomolies, newAnomaly];
+    affectedRoom.activeAnomolies.push(newAnomaly);
+
+    if (affectedRoom.activeAnomolies.length >= 2) {
+        const multiAnomalyImage = affectedRoom.multiAnomalyImages.find((multiAnomalyImage) => {
+            let matchingAnomaliesCount = 0;
+            affectedRoom.activeAnomolies.forEach((activeAnomaly) => {
+                if (multiAnomalyImage.anomalyIds.includes(activeAnomaly.id)) {
+                    matchingAnomaliesCount++;
+                }
+                return matchingAnomaliesCount === affectedRoom.activeAnomolies.length;
+            });
+        });
+        if (!multiAnomalyImage) throw Error('Unable to find image for all active anomolies');
+        affectedRoom.activeImageUrl = multiAnomalyImage.imageURL;
+    } else {
+        affectedRoom.activeImageUrl = newAnomaly.imageURL;
+    }
 };
 
 const setNextAnomolyStartTime = () => {
