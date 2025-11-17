@@ -5,7 +5,7 @@ const selectAnomoly = (activeAnomalies: Anomaly[], resolvedAnomalies: Anomaly[],
     const invalidAnomalyIds = activeAnomalies.concat(resolvedAnomalies).map(anomaly => anomaly.id);
     const validAnomalies = rooms.reduce((anomolies, room) => {
         if (room.activeAnomolies.length >= maxAnomaliesPerRoom) {
-            // room already has the max anomolies that can appear on screen, don't add any from it to list
+            // room already has the max anomolies that can appear on screen, don't add any
             return anomolies;
         }
         const validAnomaliesInRoom = room.anomalies.filter((anomaly) => {
