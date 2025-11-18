@@ -5,48 +5,59 @@
     let showRoomOptions = $state(false);
 
     const toggleReportMenu = () => {
-        if (open) cancel();
+        if (open) closeAll();
         else open = true;
     };
 
-    const cancel = () => {
+    const closeAll = () => {
         open = false;
         showRoomOptions = false;
     };
+
+    const submitReport = (type: string, roomId?: string) => {
+        closeAll();
+        report(type, roomId);
+    };
 </script>
 
-<button type="button" onclick={toggleReportMenu}>Report</button>
-{#if open}
-    <div class="reports">
-        <button type="button" onclick={() => report('obj-dpr')}>Object Dissapeared</button>
-        <button type="button" onclick={() => report('obj-apr')}>Object Appeared</button>
-        <button type="button" onclick={() => report('obj-mov')}>Object Moved</button>
-        <button type="button" onclick={() => report('img-aly')}>Image Anomaly</button>
-        <button type="button" onclick={() => report('dor-aly')}>Door Anomaly</button>
-        <button type="button" onclick={() => report('lit-aly')}>Light Anomaly</button>
-        <button type="button" onclick={() => showRoomOptions = true}>Camera Malfunction</button>
-        <button type="button" onclick={() => report('crp-apr')}>Corpse</button>
-        <button type="button" onclick={() => report('itr-apr')}>Intruder</button>
-        <button type="button" onclick={cancel}>Cancel</button>
-    </div>
-{/if}
+<!-- controls appear 'reverse' starting at bottom right corner and popping up further left -->
+<div class="report-controls">
+    {#if showRoomOptions}
+        <div class="reports">
+            <div class="header">Cam Malfunction Location</div>
+            {#each getRooms() as room}
+                <button type="button" onclick={() => submitReport('cam-mal', room.id)}>{room.label}</button>
+            {/each}
+            <button type="button" onclick={() => showRoomOptions = false}>Cancel</button>
+        </div>
+    {/if}
 
-{#if showRoomOptions}
-    <div>
-        {#each getRooms() as room}
-            <button type="button" onclick={() => report('cam-mal', room.id)}>{room.label}</button>
-        {/each}
-    </div>
-{/if}
+    {#if open}
+        <div class="reports">
+            <button type="button" onclick={() => submitReport('obj-dpr')}>Object Dissapeared</button>
+            <button type="button" onclick={() => submitReport('obj-apr')}>Object Appeared</button>
+            <button type="button" onclick={() => submitReport('obj-mov')}>Object Moved</button>
+            <button type="button" onclick={() => submitReport('img-aly')}>Image Anomaly</button>
+            <button type="button" onclick={() => submitReport('dor-aly')}>Door Anomaly</button>
+            <button type="button" onclick={() => submitReport('lit-aly')}>Light Anomaly</button>
+            <button type="button" onclick={() => showRoomOptions = true}>Camera Malfunction</button>
+            <button type="button" onclick={() => submitReport('crp-apr')}>Corpse</button>
+            <button type="button" onclick={() => submitReport('itr-apr')}>Intruder</button>
+            <button type="button" onclick={closeAll}>Cancel</button>
+        </div>
+    {/if}
+
+    <button type="button" onclick={toggleReportMenu}>Report</button>
+</div>
 
 <style>
-    button {
+    button, .header {
         background-color: rgba(0, 0, 0, 0.356);
         padding: 0.25rem;
+        border-radius: 0;
     }
-    .reports {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem
+    button:focus,
+    button:focus-visible {
+        outline: 0 auto -webkit-focus-ring-color;
     }
 </style>

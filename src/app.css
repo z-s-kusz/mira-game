@@ -77,3 +77,99 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Doing styles in a global sheet as an experiment.
+I've had annoyances in the past when seperating components that have stand alone logic
+but dependent styles (especially with relative/absolute positioning)
+This isns't something I'd do in a large project but I think it will make iterating styles easier
+since this is a small solo project */
+
+/* MAIN GAME VIEW */
+.main-window {
+  position: relative;
+  overflow: hidden;
+}
+
+.main {
+  z-index: 1;
+}
+
+.static {
+  z-index: 2;
+  position: absolute;
+  height: 200%;
+  width: 200%;
+  top: -50%;
+  left: -50%;
+  opacity: 2%;
+  animation: shift 500ms steps(5) infinite;
+}
+
+@keyframes shift {
+  8% {
+    transform: translateX(6%);
+  }
+  26% {
+    transform: translateX(-10%);
+  }
+  42% {
+    transform: translateX(4%);
+  }
+  64% {
+    transform: translateX(-20%);
+  }
+  100% {
+    transform: translateY(-20%);
+  }
+}
+
+.info-container {
+  z-index: 3;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 75%;
+}
+
+.info {
+  width: 100%;
+  color: #61ff76;
+  display: flex;
+  justify-content: space-between;
+
+  span {
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.message {
+  padding: 0.5rem;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.36);
+}
+
+.warn {
+  color: rgb(243, 32, 32);
+}
+
+.report-controls {
+  z-index: 3;
+  position: absolute;
+  top: 25%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
+
+  display: flex;
+  align-items: end;
+  justify-content: right;
+}
+.reports {
+  display: flex;
+  flex-direction: column;
+  margin: 0 1rem;
+}

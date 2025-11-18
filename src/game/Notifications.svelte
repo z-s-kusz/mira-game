@@ -18,14 +18,3 @@
 {#if message.text}
     <h3 class={`message ${message.class}`}>{message.text}</h3>
 {/if}
-
-<style>
-    .message {
-        padding: 0.5rem;
-        margin: 0;
-        background-color: rgba(0, 0, 0, 0.36);
-    }
-    .warn {
-        color: rgb(252, 184, 39);
-    }
-</style>

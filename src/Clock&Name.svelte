@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { getClockSeconds } from './GameState.svelte';
+    import { getActiveRoom, getClockSeconds } from './GameState.svelte';
     let clockDisplay = $derived.by(() => {
         const clockSeconds = getClockSeconds();
         const hours = Math.floor(clockSeconds / 60);
@@ -9,10 +9,7 @@
     });
 </script>
 
-<span class="clock">{clockDisplay}</span>
-
-<style>
-    .clock {
-        color: crimson;
-    }
-</style>
+<div class="info">
+    <span>{getActiveRoom().label}</span>
+    <span>{clockDisplay}</span>
+</div>
