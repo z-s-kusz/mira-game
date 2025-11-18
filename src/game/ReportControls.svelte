@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { fade } from 'svelte/transition';
     import { getRooms, report } from '../GameState.svelte';
 
     let open = $state(false);
@@ -18,12 +19,15 @@
         closeAll();
         report(type, roomId);
     };
+    const options = {
+        duration: 200,
+    };
 </script>
 
 <!-- controls appear 'reverse' starting at bottom right corner and popping up further left -->
 <div class="report-controls">
     {#if showRoomOptions}
-        <div class="reports">
+        <div class="reports" in:fade={options} out:fade={options}>
             <div class="header">Cam Malfunction Location</div>
             {#each getRooms() as room}
                 <button type="button" onclick={() => submitReport('cam-mal', room.id)}>{room.label}</button>
@@ -33,7 +37,7 @@
     {/if}
 
     {#if open}
-        <div class="reports">
+        <div class="reports" in:fade={options} out:fade={options}>
             <button type="button" onclick={() => submitReport('obj-dpr')}>Object Dissapeared</button>
             <button type="button" onclick={() => submitReport('obj-apr')}>Object Appeared</button>
             <button type="button" onclick={() => submitReport('obj-mov')}>Object Moved</button>

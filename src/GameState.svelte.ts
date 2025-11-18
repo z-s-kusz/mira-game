@@ -4,7 +4,7 @@ import wait from './lib/wait';
 import type { GameView } from './types/GameView';
 import type { Anomaly, Level, Room } from './types/Level';
 
-const milliSecondsPerGameMinute = 900; // MT is 5000
+const milliSecondsPerGameMinute = 500; // MT is 5000
 let gameView: GameView = $state('MainMenu');
 let clockSeconds = $state(0);
 let clockInterval: number;
@@ -108,7 +108,7 @@ const report = async (reportType: string, roomId?: string) => {
     });
 
     centerMessage = 'Report pending...';
-    await wait(800);
+    await wait(4000); // might want to check MT time
     centerMessage = '';
 
     if (reportIsCorrect) {
@@ -117,9 +117,9 @@ const report = async (reportType: string, roomId?: string) => {
         room.activeAnomolies = room.activeAnomolies.filter((anomaly) => {
             if (anomaly.validReports.includes(reportType)) {
                 resolvedAnomalies.push(anomaly);
-                return true;
+                return false;
             }
-            return false;
+            return true;
         });
 
         if (room.activeAnomolies.length >= 2) {
@@ -143,8 +143,7 @@ const report = async (reportType: string, roomId?: string) => {
         showFixingView = false;
 
     } else {
-        console.log('no anomalies of that type found in room');
-        centerMessage = `Reported anomaly type not found in ${room.label}`;
+        centerMessage = `Reported anomaly not found in ${room.label}`;
         await wait(2000);
         centerMessage = '';
     }
