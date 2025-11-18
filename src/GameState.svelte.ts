@@ -1,22 +1,25 @@
-import selectAnomoly from './anomaly-selector';
+import selectAnomoly from './lib/anomaly-selector';
 import levels from './levels';
+import wait from './lib/wait';
 import type { GameView } from './types/GameView';
 import type { Anomaly, Level, Room } from './types/Level';
 
-const milliSecondsPerGameMinute = 500; // MT is 5000
+const milliSecondsPerGameMinute = 900; // MT is 5000
 let gameView: GameView = $state('MainMenu');
 let clockSeconds = $state(0);
 let clockInterval: number;
-let selectedLevel: Level = $state(levels[0]);
-let activeRoom: Room = $state(selectedLevel.rooms[0]);
+let selectedLevel: Level = $state(levels[0]); // only use after assigning in startGame()
+let activeRoom: Room = $state(selectedLevel.rooms[0]); //  only use after assigning in startGame()
 let nextAnomolyStartTime = $state(15);
 
+let centerMessage = $state('');
+let showFixingView = $state(false);
 let anomolyGameOverCount = $state(4);
 let warning = $state({
     threshhold: 3,
     remainingWarnings: 1,
 });
-let resolvedAnomolys: Anomaly[] = $state([]);
+let resolvedAnomalies: Anomaly[] = $state([]);
 let activeAnomolies = $derived.by(() => {
     let activeAnomalies: Anomaly[] = [];
     selectedLevel.rooms.forEach((room) => {
@@ -59,13 +62,11 @@ const gameIsOver = () => {
 };
 
 const activateNewAnomaly = () => {
-    const newAnomaly = selectAnomoly(activeAnomolies, resolvedAnomolys, selectedLevel.rooms);
+    const newAnomaly = selectAnomoly(activeAnomolies, resolvedAnomalies, selectedLevel.rooms);
     const affectedRoom = selectedLevel.rooms.find((room) => room.id === newAnomaly.roomId);
     if (!affectedRoom) throw Error('Could not find the room associated with new anomaly');
     console.log('new anomaly', newAnomaly);
 
-    // TODO double check that push works with signals here, may need to
-    // affectedRoom.activeAnomolies = [...affectedRoom.activeAnomolies, newAnomaly];
     affectedRoom.activeAnomolies.push(newAnomaly);
 
     if (affectedRoom.activeAnomolies.length >= 2) {
@@ -96,6 +97,57 @@ const setNextAnomolyStartTime = () => {
     ];
     const i = Math.floor(Math.random() * wieghedTimes.length);
     nextAnomolyStartTime = clockSeconds + wieghedTimes[i];
+};
+
+const report = async (reportType: string, roomId?: string) => {
+    if (!roomId) roomId = activeRoom.id;
+    const room = selectedLevel.rooms.find((room) => room.id === roomId);
+    if (!room) throw Error(`Room id ${roomId} not found.`);
+    const reportIsCorrect = !!room.activeAnomolies.find((anomaly) => {
+        return anomaly.validReports.includes(reportType);
+    });
+
+    centerMessage = 'Report pending...';
+    await wait(800);
+    centerMessage = '';
+
+    if (reportIsCorrect) {
+        showFixingView = true;
+        // will remove ALL anomalies of that type in that room
+        room.activeAnomolies = room.activeAnomolies.filter((anomaly) => {
+            if (anomaly.validReports.includes(reportType)) {
+                resolvedAnomalies.push(anomaly);
+                return true;
+            }
+            return false;
+        });
+
+        if (room.activeAnomolies.length >= 2) {
+            const multiAnomalyImage = room.multiAnomalyImages.find((multiAnomalyImage) => {
+                let matchingAnomaliesCount = 0;
+                room.activeAnomolies.forEach((activeAnomaly) => {
+                    if (multiAnomalyImage.anomalyIds.includes(activeAnomaly.id)) {
+                        matchingAnomaliesCount++;
+                    }
+                    return matchingAnomaliesCount === room.activeAnomolies.length;
+                });
+            });
+            if (!multiAnomalyImage) throw Error('Unable to find multi-anomaly-image after report filed');
+            room.activeImageUrl = multiAnomalyImage.imageURL;
+        } else if (room.activeAnomolies.length === 1) {
+            room.activeImageUrl = room.activeAnomolies[0].imageURL;
+        } else {
+            room.activeImageUrl = room.imageUrl;
+        }
+        await wait(1500);
+        showFixingView = false;
+
+    } else {
+        console.log('no anomalies of that type found in room');
+        centerMessage = `Reported anomaly type not found in ${room.label}`;
+        await wait(2000);
+        centerMessage = '';
+    }
 };
 
 const goToNextRoom = () => {
@@ -141,6 +193,14 @@ const getRooms = () => {
     return selectedLevel.rooms;
 };
 
+const getShowFixingView = () => {
+    return showFixingView;
+};
+
+const getCenterMessage = () => {
+    return centerMessage;
+};
+
 export {
     getGameView,
     setGameView,
@@ -152,4 +212,7 @@ export {
     getActiveAnomaliesCount,
     getActiveRoom,
     getRooms,
+    report,
+    getShowFixingView,
+    getCenterMessage,
 };

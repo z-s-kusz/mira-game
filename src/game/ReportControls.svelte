@@ -1,20 +1,8 @@
 <script lang="ts">
-    import { getActiveRoom, getRooms } from '../GameState.svelte';
+    import { getRooms, report } from '../GameState.svelte';
 
     let open = $state(false);
     let showRoomOptions = $state(false);
-
-    const report = (type: string, roomId?: string) => {
-        if (!roomId) roomId = getActiveRoom().id;
-
-        // if room with id = roomId has an active anomaly of reported type
-            // show fixing screen
-            // if 2 are active handle removing only correct one
-            // else remove and go back to main image
-        // else show no anomoly message
-
-        // finally hide messages
-    };
 
     const toggleReportMenu = () => {
         if (open) cancel();

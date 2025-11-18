@@ -1,4 +1,4 @@
-import type { Anomaly, Room } from './types/Level';
+import type { Anomaly, Room } from '../types/Level';
 
 const selectAnomoly = (activeAnomalies: Anomaly[], resolvedAnomalies: Anomaly[], rooms: Room[]) => {
     const maxAnomaliesPerRoom = 2;
