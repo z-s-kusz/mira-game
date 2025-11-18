@@ -3,8 +3,11 @@ import levels from './levels';
 import wait from './lib/wait';
 import type { GameView } from './types/GameView';
 import type { Anomaly, Level, Room } from './types/Level';
+// let devMode = false;
+let devMode = import.meta.env.DEV;
 
-const milliSecondsPerGameMinute = 500; // MT is 5000
+// time being less than ~3000 will result in some jittery fade ins/outs
+const milliSecondsPerGameMinute = devMode ? 500 : 4000; // MT is 5000
 let gameView: GameView = $state('MainMenu');
 let clockSeconds = $state(0);
 let clockInterval: number;
@@ -108,7 +111,7 @@ const report = async (reportType: string, roomId?: string) => {
     });
 
     centerMessage = 'Report pending...';
-    await wait(4000); // might want to check MT time
+    await wait(milliSecondsPerGameMinute); // might want to check MT time
     centerMessage = '';
 
     if (reportIsCorrect) {
@@ -139,12 +142,12 @@ const report = async (reportType: string, roomId?: string) => {
         } else {
             room.activeImageUrl = room.imageUrl;
         }
-        await wait(1500);
+        await wait(devMode ? 500 : milliSecondsPerGameMinute / 2);
         showFixingView = false;
 
     } else {
         centerMessage = `Reported anomaly not found in ${room.label}`;
-        await wait(2000);
+        await wait(milliSecondsPerGameMinute / 2);
         centerMessage = '';
     }
 };
