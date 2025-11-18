@@ -129,7 +129,7 @@ since this is a small solo project */
   top: 0;
   left: 0;
   right: 0;
-  bottom: 75%;
+  bottom: 60%;
 }
 
 .info {
@@ -157,7 +157,7 @@ since this is a small solo project */
 .report-controls {
   z-index: 3;
   position: absolute;
-  top: 25%;
+  top: 40%;
   left: 0;
   right: 0;
   bottom: 0;

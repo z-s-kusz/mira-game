@@ -45,11 +45,13 @@ const startTimer = () => {
 
         if (clockSeconds >= 360) {
             gameOverState = 'win';
+            gameView = 'GameOver';
             stopTimer();
         } else if (clockSeconds >= nextAnomolyStartTime) {
             if (checkForGameOver()) {
                 // show game over message, if they have the perk show them what anomolies they missed
                 gameOverState = 'lose';
+                gameView = 'GameOver';
                 return stopTimer();
             }
             activateNewAnomaly();
@@ -243,7 +245,11 @@ const reset = (replay = false) => {
     gameOverState = '';
     warning.remainingWarnings = 1;
     resolvedAnomalies = [];
-    gameView = replay ? 'Playing' : 'MainMenu';
+    if (replay) {
+        startGame(selectedLevel);
+    } else {
+        gameView = 'MainMenu';
+    }
 };
 
 export {
@@ -262,6 +268,6 @@ export {
     getCenterMessage,
     getGameOverState,
     getResolvedAnomalies,
-    // decrementWarnings,
+    decrementWarnings,
     reset,
 };
