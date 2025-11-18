@@ -17,6 +17,7 @@ let nextAnomolyStartTime = $state(15);
 
 let centerMessage = $state('');
 let showFixingView = $state(false);
+let gameOverState: 'win' | 'lose' | '' = $state('');
 let anomolyGameOverCount = $state(4);
 let warning = $state({
     threshhold: 3,
@@ -43,10 +44,12 @@ const startTimer = () => {
         clockSeconds = clockSeconds + 1;
 
         if (clockSeconds >= 360) {
+            gameOverState = 'win';
             stopTimer();
         } else if (clockSeconds >= nextAnomolyStartTime) {
-            if (gameIsOver()) {
+            if (checkForGameOver()) {
                 // show game over message, if they have the perk show them what anomolies they missed
+                gameOverState = 'lose';
                 return stopTimer();
             }
             activateNewAnomaly();
@@ -60,14 +63,21 @@ const stopTimer = () => {
     else throw Error('Tried stopping timer before init.');
 };
 
-const gameIsOver = () => {
+const checkForGameOver = () => {
     return activeAnomolies.length === anomolyGameOverCount - 1;
 };
 
 const activateNewAnomaly = () => {
-    const newAnomaly = selectAnomoly(activeAnomolies, resolvedAnomalies, selectedLevel.rooms);
+    let newAnomaly:Anomaly;
+    try {
+        newAnomaly = selectAnomoly(activeAnomolies, resolvedAnomalies, selectedLevel.rooms);
+    } catch (error) {
+        return handleError('No new anomalies found.')
+    }
+    if (!newAnomaly) return handleError('No new anomalies found.');
+
     const affectedRoom = selectedLevel.rooms.find((room) => room.id === newAnomaly.roomId);
-    if (!affectedRoom) throw Error('Could not find the room associated with new anomaly');
+    if (!affectedRoom) return handleError('Room ID for next anomaly not found.');
 
     affectedRoom.activeAnomolies.push(newAnomaly);
 
@@ -81,7 +91,7 @@ const activateNewAnomaly = () => {
             });
             return matchingAnomaliesCount === affectedRoom.activeAnomolies.length;
         });
-        if (!multiAnomalyImage) throw Error('Unable to find image for all active anomolies');
+        if (!multiAnomalyImage) return handleError('Unable to find image for multi-anomoly.');
         affectedRoom.activeImageUrl = multiAnomalyImage.imageUrl;
     } else {
         affectedRoom.activeImageUrl = newAnomaly.imageUrl;
@@ -104,13 +114,13 @@ const setNextAnomolyStartTime = () => {
 const report = async (reportType: string, roomId?: string) => {
     if (!roomId) roomId = activeRoom.id;
     const room = selectedLevel.rooms.find((room) => room.id === roomId);
-    if (!room) throw Error(`Room id ${roomId} not found.`);
+    if (!room) return handleError(`Room id ${roomId} not found.`);
     const reportIsCorrect = !!room.activeAnomolies.find((anomaly) => {
         return anomaly.validReports.includes(reportType);
     });
 
     centerMessage = 'Report pending...';
-    await wait(milliSecondsPerGameMinute); // might want to check MT time
+    await wait(milliSecondsPerGameMinute);
     centerMessage = '';
 
     if (reportIsCorrect) {
@@ -134,7 +144,7 @@ const report = async (reportType: string, roomId?: string) => {
                 });
                 return matchingAnomaliesCount === room.activeAnomolies.length;
             });
-            if (!multiAnomalyImage) throw Error('Unable to find multi-anomaly-image after report filed');
+            if (!multiAnomalyImage) return handleError('Unable to find multi-anomaly image after report filed.');
             room.activeImageUrl = multiAnomalyImage.imageUrl;
         } else if (room.activeAnomolies.length === 1) {
             room.activeImageUrl = room.activeAnomolies[0].imageUrl;
@@ -182,6 +192,10 @@ const getWarning = () => {
     return warning;
 };
 
+const decrementWarnings = () => {
+    warning.remainingWarnings = warning.remainingWarnings - 1;
+};
+
 const getActiveAnomaliesCount = () => {
     return activeAnomolies.length;
 };
@@ -202,6 +216,36 @@ const getCenterMessage = () => {
     return centerMessage;
 };
 
+const getGameOverState = () => {
+    return gameOverState;
+};
+
+const getResolvedAnomalies = () => {
+    return resolvedAnomalies;
+};
+
+const handleError = (message: string) => {
+    centerMessage = `Error: ${message} Refresh page to reset.`
+    stopTimer();
+    throw Error(message);
+}
+
+const reset = (replay = false) => {
+    selectedLevel.rooms.forEach((room) => {
+        room.activeImageUrl = room.imageUrl;
+        room.activeAnomolies = [];
+    });
+    clockSeconds = 0;
+    activeRoom = selectedLevel.rooms[0];
+    nextAnomolyStartTime = 15;
+    centerMessage = '';
+    showFixingView = false;
+    gameOverState = '';
+    warning.remainingWarnings = 1;
+    resolvedAnomalies = [];
+    gameView = replay ? 'Playing' : 'MainMenu';
+};
+
 export {
     getGameView,
     setGameView,
@@ -216,4 +260,8 @@ export {
     report,
     getShowFixingView,
     getCenterMessage,
+    getGameOverState,
+    getResolvedAnomalies,
+    // decrementWarnings,
+    reset,
 };
