@@ -6,7 +6,7 @@ export interface AnimationFrame {
 export interface Anomaly {
     id: string;
     roomId: string;
-    imageURL: string;
+    imageUrl: string;
     validReports: string[];
     isAnimated: boolean;
     loopAnimation: boolean;
@@ -16,7 +16,7 @@ export interface Anomaly {
 export interface MultiAnomalyImage {
     id: string;
     anomalyIds: string[];
-    imageURL: string;
+    imageUrl: string;
 }
 
 export interface Room {

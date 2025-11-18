@@ -68,7 +68,6 @@ const activateNewAnomaly = () => {
     const newAnomaly = selectAnomoly(activeAnomolies, resolvedAnomalies, selectedLevel.rooms);
     const affectedRoom = selectedLevel.rooms.find((room) => room.id === newAnomaly.roomId);
     if (!affectedRoom) throw Error('Could not find the room associated with new anomaly');
-    console.log('new anomaly', newAnomaly);
 
     affectedRoom.activeAnomolies.push(newAnomaly);
 
@@ -79,13 +78,13 @@ const activateNewAnomaly = () => {
                 if (multiAnomalyImage.anomalyIds.includes(activeAnomaly.id)) {
                     matchingAnomaliesCount++;
                 }
-                return matchingAnomaliesCount === affectedRoom.activeAnomolies.length;
             });
+            return matchingAnomaliesCount === affectedRoom.activeAnomolies.length;
         });
         if (!multiAnomalyImage) throw Error('Unable to find image for all active anomolies');
-        affectedRoom.activeImageUrl = multiAnomalyImage.imageURL;
+        affectedRoom.activeImageUrl = multiAnomalyImage.imageUrl;
     } else {
-        affectedRoom.activeImageUrl = newAnomaly.imageURL;
+        affectedRoom.activeImageUrl = newAnomaly.imageUrl;
     }
 };
 
@@ -125,20 +124,20 @@ const report = async (reportType: string, roomId?: string) => {
             return true;
         });
 
-        if (room.activeAnomolies.length >= 2) {
+        if (room.activeAnomolies.length >= 2) { // limit is 2 so this if will never be hit but it'd be nice to add in the future
             const multiAnomalyImage = room.multiAnomalyImages.find((multiAnomalyImage) => {
                 let matchingAnomaliesCount = 0;
                 room.activeAnomolies.forEach((activeAnomaly) => {
                     if (multiAnomalyImage.anomalyIds.includes(activeAnomaly.id)) {
                         matchingAnomaliesCount++;
                     }
-                    return matchingAnomaliesCount === room.activeAnomolies.length;
                 });
+                return matchingAnomaliesCount === room.activeAnomolies.length;
             });
             if (!multiAnomalyImage) throw Error('Unable to find multi-anomaly-image after report filed');
-            room.activeImageUrl = multiAnomalyImage.imageURL;
+            room.activeImageUrl = multiAnomalyImage.imageUrl;
         } else if (room.activeAnomolies.length === 1) {
-            room.activeImageUrl = room.activeAnomolies[0].imageURL;
+            room.activeImageUrl = room.activeAnomolies[0].imageUrl;
         } else {
             room.activeImageUrl = room.imageUrl;
         }

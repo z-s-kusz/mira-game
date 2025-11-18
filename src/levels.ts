@@ -15,23 +15,39 @@ const levels = [
                     {
                         id: '1111',
                         roomId: '',
-                        imageURL: 'cam-dissappear.png',
+                        imageUrl: 'cam-dissappear.png',
                         validReports: ['obj-dpr'],
                     },
                     {
                         id: '1112',
                         roomId: '',
-                        imageURL: 'cam-appear.png',
+                        imageUrl: 'cam-appear.png',
                         validReports: ['obj-apr'],
                     },
                     {
                         id: '1113',
                         roomId: '',
-                        imageURL: 'cam-intrude.png',
+                        imageUrl: 'cam-intrude.png',
                         validReports: ['itr-apr'],
                     },
                 ],
-                multiAnomalyImages: [] as MultiAnomalyImage[],
+                multiAnomalyImages: [
+                    {
+                        id: '2001',
+                        anomalyIds: ['1111', '1112'],
+                        imageUrl: 'cam-dissappear+appear.png',
+                    },
+                    {
+                        id: '2002',
+                        anomalyIds: ['1113', '1112'],
+                        imageUrl: 'cam-intruder+appear.png',
+                    },
+                    {
+                        id: '2003',
+                        anomalyIds: ['1113', '1111'],
+                        imageUrl: 'cam-intruder+dissappear.png',
+                    },
+                ] as MultiAnomalyImage[],
             },
             {
                 id: '20',
@@ -43,13 +59,13 @@ const levels = [
                     {
                         id: '2111',
                         roomId: '',
-                        imageURL: 'cam2-dissappear.png',
+                        imageUrl: 'cam2-dissappear.png',
                         validReports: ['obj-dpr'],
                     },
                     {
                         id: '2119',
                         roomId: '',
-                        imageURL: 'cam2-intrude.png',
+                        imageUrl: 'cam2-intrude.png',
                         validReports: ['itr-apr'],
                     },
                 ],
